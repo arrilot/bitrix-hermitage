@@ -2,6 +2,7 @@
 
 namespace Arrilot\BitrixHermitage;
 
+use CBitrixComponent;
 use CBitrixComponentTemplate;
 use CIBlock;
 use InvalidArgumentException;
@@ -29,6 +30,10 @@ class Actions
      */
     public static function editIBlockElement($template, $element)
     {
+        if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
+            return;
+        }
+
         if (!$element["IBLOCK_ID"] || !$element['ID']) {
             throw new InvalidArgumentException('Element must include ID and IBLOCK_ID');
         }
@@ -44,8 +49,12 @@ class Actions
      * @param $element
      * @param string $confirm
      */
-    public static function deleteIBlockElement($template, $element, $confirm = 'Вы уверены что хотите удалить элемент?')
+    public static function deleteIBlockElement($template, $element, $confirm = 'Вы уверены, что хотите удалить элемент?')
     {
+        if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
+            return;
+        }
+
         if (!$element["IBLOCK_ID"] || !$element['ID']) {
             throw new InvalidArgumentException('Element must include ID and IBLOCK_ID');
         }
@@ -58,10 +67,24 @@ class Actions
 
     /**
      * @param CBitrixComponentTemplate $template
+     * @param $element
+     * @return string
+     */
+    public static function areaForIBlockElement($template, $element)
+    {
+        return static::getEditArea($template, 'iblock_element', $element);
+    }
+
+    /**
+     * @param CBitrixComponentTemplate $template
      * @param $section
      */
     public static function editIBlockSection($template, $section)
     {
+        if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
+            return;
+        }
+
         if (!$section["IBLOCK_ID"] || !$section['ID']) {
             throw new InvalidArgumentException('Section must include ID and IBLOCK_ID');
         }
@@ -77,8 +100,12 @@ class Actions
      * @param $section
      * @param string $confirm
      */
-    public static function deleteIBlockSection($template, $section, $confirm = 'Вы уверены что хотите удалить раздел?')
+    public static function deleteIBlockSection($template, $section, $confirm = 'Вы уверены, что хотите удалить раздел?')
     {
+        if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
+            return;
+        }
+
         if (!$section["IBLOCK_ID"] || !$section['ID']) {
             throw new InvalidArgumentException('Section must include ID and IBLOCK_ID');
         }
@@ -88,7 +115,17 @@ class Actions
 
         $template->AddDeleteAction('iblock_section_' . $section['ID'], $link, CIBlock::GetArrayByID($section["IBLOCK_ID"], "SECTION_DELETE"), array("CONFIRM" => $confirm));
     }
-    
+
+    /**
+     * @param CBitrixComponentTemplate $template
+     * @param $section
+     * @return string
+     */
+    public static function areaForIBlockSection($template, $section)
+    {
+        return static::getEditArea($template, 'iblock_section', $section);
+    }
+
     /**
      * @param CBitrixComponentTemplate $template
      * @param $element
@@ -96,6 +133,10 @@ class Actions
      */
     public static function editHLBlockElement($template, $element, $label = 'Изменить элемент')
     {
+        if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
+            return;
+        }
+
         if (!$element["HLBLOCK_ID"] || !$element['ID']) {
             throw new InvalidArgumentException('Element must include ID and HLBLOCK_ID');
         }
@@ -112,16 +153,51 @@ class Actions
      * @param string $label
      * @param string $confirm
      */
-    public static function deleteHLBlockElement($template, $element, $label = 'Удалить элемент', $confirm = 'Вы уверены что хотите удалить элемент?')
+    public static function deleteHLBlockElement($template, $element, $label = 'Удалить элемент', $confirm = 'Вы уверены, что хотите удалить элемент?')
     {
+        if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
+            return;
+        }
+        
         if (!$element["HLBLOCK_ID"] || !$element['ID']) {
             throw new InvalidArgumentException('Element must include ID and HLBLOCK_ID');
         }
 
-        $linkTemplate = '/bitrix/admin/highloadblock_row_edit.php?action=delete&ENTITY_ID=%s&ID=%s&lang=ru&sessid=%s';
-        $link = sprintf($linkTemplate, (int) $element["HLBLOCK_ID"], (int) $element["ID"], bitrix_sessid_get());
+        $linkTemplate = '/bitrix/admin/highloadblock_row_edit.php?action=delete&ENTITY_ID=%s&ID=%s&lang=ru';
+        $link = sprintf($linkTemplate, (int) $element["HLBLOCK_ID"], (int) $element["ID"]);
     
         $template->AddDeleteAction('hlblock_element_' . $element['ID'], $link, $label, array("CONFIRM" => $confirm));
+    }
+
+    /**
+     * @param CBitrixComponentTemplate $template
+     * @param $element
+     * @return string
+     */
+    public static function areaForHLBlockElement($template, $element)
+    {
+        return static::getEditArea($template, 'hlblock_element', $element);
+    }
+    
+    /**
+     * @param CBitrixComponent|CBitrixComponentTemplate $componentOrTemplate
+     * @param $iblockId
+     * @param array $options
+     */
+    public static function addForIBlock($componentOrTemplate, $iblockId, $options = [])
+    {
+        if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
+            return;
+        }
+
+        if ($componentOrTemplate instanceof CBitrixComponentTemplate) {
+            $componentOrTemplate = $componentOrTemplate->__component;
+        }
+
+        $buttons = CIBlock::GetPanelButtons($iblockId, 0, 0, $options);
+        $menu = CIBlock::GetComponentMenu($GLOBALS['APPLICATION']->GetPublicShowMode(), $buttons);
+
+        $componentOrTemplate->addIncludeAreaIcons($menu);
     }
 
     /**
@@ -135,7 +211,7 @@ class Actions
                 $element["IBLOCK_ID"],
                 $element['ID'],
                 0,
-                ['SECTION_BUTTONS' => false]
+                ['SECTION_BUTTONS' => false, 'SESSID' => false]
             );
         }
 
@@ -153,7 +229,7 @@ class Actions
                 $section["IBLOCK_ID"],
                 0,
                 $section['ID'],
-                ['SECTION_BUTTONS' => false]
+                ['SESSID' => false]
             );
         }
 
