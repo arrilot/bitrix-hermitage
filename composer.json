@@ -1,0 +1,22 @@
+{
+  "name": "arrilot/bitrix-hermitage",
+  "license": "MIT",
+  "keywords": [
+    "bitrix"
+  ],
+  "authors": [
+    {
+      "name": "Nekrasov Ilya",
+      "email": "nekrasov.ilya90@gmail.com"
+    }
+  ],
+  "homepage": "https://github.com/arrilot/bitrix-hermitage",
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Arrilot\\BitrixHermitage\\": "src/"
+    }
+  }
+}
