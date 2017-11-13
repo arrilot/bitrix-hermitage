@@ -2,15 +2,20 @@
 
 namespace Arrilot\BitrixHermitage;
 
+use Bitrix\Main\Application;
 use CBitrixComponent;
 use CBitrixComponentTemplate;
 use CIBlock;
 use InvalidArgumentException;
 
-class Actions
+class Action
 {
     protected static $panelButtons = [];
-
+    
+    protected static $iblockElementArray = [];
+    
+    protected static $iblockSectionArray = [];
+    
     /**
      * Get edit area id for specific type
      *
@@ -21,7 +26,8 @@ class Actions
      */
     public static function getEditArea($template, $type, $element)
     {
-        return $template->GetEditAreaId($type . '_' . $element['ID']);
+        $id = is_numeric($element) ? $element : $element['ID'];
+        return $template->GetEditAreaId("{$type}_{$id}");
     }
 
     /**
@@ -32,6 +38,10 @@ class Actions
     {
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
             return;
+        }
+
+        if (is_numeric($element)) {
+            $element = static::prepareIBlockElementArrayById($element);
         }
 
         if (!$element["IBLOCK_ID"] || !$element['ID']) {
@@ -53,6 +63,10 @@ class Actions
     {
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
             return;
+        }
+
+        if (is_numeric($element)) {
+            $element = static::prepareIBlockElementArrayById($element);
         }
 
         if (!$element["IBLOCK_ID"] || !$element['ID']) {
@@ -85,6 +99,10 @@ class Actions
             return;
         }
 
+        if (is_numeric($section)) {
+            $section = static::prepareIBlockSectionArrayById($section);
+        }
+
         if (!$section["IBLOCK_ID"] || !$section['ID']) {
             throw new InvalidArgumentException('Section must include ID and IBLOCK_ID');
         }
@@ -104,6 +122,10 @@ class Actions
     {
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
             return;
+        }
+
+        if (is_numeric($section)) {
+            $section = static::prepareIBlockSectionArrayById($section);
         }
 
         if (!$section["IBLOCK_ID"] || !$section['ID']) {
@@ -234,5 +256,45 @@ class Actions
         }
 
         return static::$panelButtons['iblock_section'][$section['ID']];
+    }
+    
+    /**
+     * @param int $id
+     * @return array
+     */
+    protected static function prepareIBlockElementArrayById($id)
+    {
+        $id = (int) $id;
+        if (!$id) {
+            return [];
+        }
+
+        if (empty(static::$iblockElementArray[$id])) {
+            $connection = Application::getConnection();
+            $el = $connection->query("SELECT ID, IBLOCK_ID FROM b_iblock_element WHERE ID = {$id}")->fetch();
+            static::$iblockElementArray[$id] = $el ? $el : [];
+        }
+
+        return static::$iblockElementArray[$id];
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    protected static function prepareIBlockSectionArrayById($id)
+    {
+        $id = (int) $id;
+        if (!$id) {
+            return [];
+        }
+
+        if (empty(static::$iblockSectionArray[$id])) {
+            $connection = Application::getConnection();
+            $el = $connection->query("SELECT ID, IBLOCK_ID FROM b_iblock_section WHERE ID = {$id}")->fetch();
+            static::$iblockSectionArray[$id] = $el ? $el : [];
+        }
+
+        return static::$iblockSectionArray[$id];
     }
 }

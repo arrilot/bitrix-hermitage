@@ -39,13 +39,13 @@ foreach($arResult["ARTICLES"] as $article) {
 }
 
 // с пакетом
-use Arrilot\BitrixHermitage\Actions;
+use Arrilot\BitrixHermitage\Action;
 
 foreach($arResult["ARTICLES"] as $article) {
-    Actions::editIBlockElement($this, $article);
-    Actions::deleteIBlockElement($this, $article);
+    Action::editIBlockElement($this, $article);
+    Action::deleteIBlockElement($this, $article);
 
-    ?><div id="<?= Actions::areaForIBlockElement($this, $article) ?>">{{ $article['NAME'] }}</div><?
+    ?><div id="<?= Action::areaForIBlockElement($this, $article) ?>">{{ $article['NAME'] }}</div><?
 }
 ```
 
@@ -54,17 +54,17 @@ foreach($arResult["ARTICLES"] as $article) {
 ### Группы методов:
 
 ```php
-Actions::editIBlockElement($template, $element);
-Actions::deleteIBlockElement($template, $element, $confirm = 'Вы уверены, что хотите удалить элемент?');
-Actions::areaForIBlockElement($template, $element);
+Action::editIBlockElement($template, $element);
+Action::deleteIBlockElement($template, $element, $confirm = 'Вы уверены, что хотите удалить элемент?');
+Action::areaForIBlockElement($template, $element);
 
-Actions::editIBlockSection($template, $section);
-Actions::deleteIBlockSection($template, $section, $confirm = 'Вы уверены, что хотите удалить раздел?');
-Actions::areaForIBlockSection($template, $section);
+Action::editIBlockSection($template, $section);
+Action::deleteIBlockSection($template, $section, $confirm = 'Вы уверены, что хотите удалить раздел?');
+Action::areaForIBlockSection($template, $section);
 
-Actions::editHLBlockElement($template, $element);
-Actions::deleteHLBlockElement($template, $element, $confirm = 'Вы уверены, что хотите удалить элемент?');
-Actions::areaForHLBlockElement($template, $element);
+Action::editHLBlockElement($template, $element);
+Action::deleteHLBlockElement($template, $element, $confirm = 'Вы уверены, что хотите удалить элемент?');
+Action::areaForHLBlockElement($template, $element);
 ```
 
 ### Пример с кнопками добавления
@@ -80,7 +80,7 @@ if($APPLICATION->GetShowIncludeAreas()) {
 }
 
 // С пакетом
-\Arrilot\BitrixHermitage\Actions::addForIBlock($this, $iblockId, [...]);
+\Arrilot\BitrixHermitage\Action::addForIBlock($this, $iblockId, [...]);
 // В отличии от варианта выше, данный метод можно вызывать как в компоненте, так и в шаблоне. Он понимает и то, и другое в качестве первого параметра.
 ```
 
@@ -89,9 +89,10 @@ if($APPLICATION->GetShowIncludeAreas()) {
 В простейшем случае этот параметр можно и вовсе опустить.
 
 ### Что такое `$element` и `$section`?
-`$element` и `$section` это массивы (либо объекты реализующие интерфейс `ArrayAccess`
+`$element` и `$section` это массивы (либо объекты реализующие интерфейс `ArrayAccess`)
 Для инфоблоков они должны содержать `ID` и `IBLOCK_ID`.
 Для хайлоадблокрв они должны содержать `ID` и `HLBLOCK_ID`.
+Также для инфоблоков в качестве `$element` и `$section` можно передать просто ID элемента или раздела инфоблока. В этом случае будут доп запросы в БД, но выполнены они будут только в режиме правки.
 
 > Замечание
 Если вы для хайлоадблоков используете `eloquent` из `arrilot/bitrix-models`, то стоит добавить следующий метод в модель:
