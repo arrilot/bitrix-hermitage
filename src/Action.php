@@ -43,7 +43,6 @@ class Action
         if (is_numeric($element)) {
             $element = static::prepareIBlockElementArrayById($element);
         }
-
         if (!$element["IBLOCK_ID"] || !$element['ID']) {
             throw new InvalidArgumentException('Element must include ID and IBLOCK_ID');
         }
@@ -77,6 +76,16 @@ class Action
         $link = $buttons["edit"]["delete_element"]["ACTION_URL"];
 
         $template->AddDeleteAction('iblock_element_' . $element['ID'], $link, CIBlock::GetArrayByID($element["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => $confirm));
+    }
+
+    /**
+     * @param CBitrixComponentTemplate $template
+     * @param $element
+     */
+    public static function editAndDeleteIBlockElement($template, $element)
+    {
+        static::editIBlockElement($template, $element);
+        static::deleteIBlockElement($template, $element);
     }
 
     /**
@@ -141,6 +150,16 @@ class Action
     /**
      * @param CBitrixComponentTemplate $template
      * @param $section
+     */
+    public static function editAndDeleteIBlockSection($template, $section)
+    {
+        static::editIBlockSection($template, $section);
+        static::deleteIBlockSection($template, $section);
+    }
+
+    /**
+     * @param CBitrixComponentTemplate $template
+     * @param $section
      * @return string
      */
     public static function areaForIBlockSection($template, $section)
@@ -189,6 +208,16 @@ class Action
         $link = sprintf($linkTemplate, (int) $element["HLBLOCK_ID"], (int) $element["ID"]);
     
         $template->AddDeleteAction('hlblock_element_' . $element['ID'], $link, $label, array("CONFIRM" => $confirm));
+    }
+
+    /**
+     * @param CBitrixComponentTemplate $template
+     * @param $element
+     */
+    public static function editAndDeleteHLBlockElement($template, $element)
+    {
+        static::editHLBlockElement($template, $element);
+        static::deleteHLBlockElement($template, $element);
     }
 
     /**
