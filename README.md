@@ -42,8 +42,7 @@ foreach($arResult["ARTICLES"] as $article) {
 use Arrilot\BitrixHermitage\Action;
 
 foreach($arResult["ARTICLES"] as $article) {
-    Action::editIBlockElement($this, $article);
-    Action::deleteIBlockElement($this, $article);
+    Action::editAndDeleteIBlockElement($this, $article);
 
     ?><div id="<?= Action::areaForIBlockElement($this, $article) ?>">{{ $article['NAME'] }}</div><?
 }
@@ -54,14 +53,17 @@ foreach($arResult["ARTICLES"] as $article) {
 ### Группы методов:
 
 ```php
+Action::editAndDeleteIBlockElement($template, $element);
 Action::editIBlockElement($template, $element);
 Action::deleteIBlockElement($template, $element, $confirm = 'Вы уверены, что хотите удалить элемент?');
 Action::areaForIBlockElement($template, $element);
 
+Action::editAndDeleteIBlockSection($template, $section);
 Action::editIBlockSection($template, $section);
 Action::deleteIBlockSection($template, $section, $confirm = 'Вы уверены, что хотите удалить раздел?');
 Action::areaForIBlockSection($template, $section);
 
+Action::editAndDeleteHLBlockElement($template, $element);
 Action::editHLBlockElement($template, $element);
 Action::deleteHLBlockElement($template, $element, $confirm = 'Вы уверены, что хотите удалить элемент?');
 Action::areaForHLBlockElement($template, $element);
