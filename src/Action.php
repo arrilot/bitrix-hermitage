@@ -2,6 +2,7 @@
 
 namespace Arrilot\BitrixHermitage;
 
+use Bitrix\Highloadblock\HighloadBlockTable;
 use Bitrix\Main\Application;
 use CBitrixComponent;
 use CBitrixComponentTemplate;
@@ -11,11 +12,13 @@ use InvalidArgumentException;
 class Action
 {
     protected static $panelButtons = [];
-    
+
     protected static $iblockElementArray = [];
-    
+
     protected static $iblockSectionArray = [];
-    
+
+    protected static $hlblockIdsByTableName= [];
+
     /**
      * Get edit area id for specific type
      *
@@ -178,8 +181,12 @@ class Action
             return;
         }
 
+        if (!$element["HLBLOCK_ID"] && $element["HLBLOCK_TABLE_NAME"]) {
+            $element["HLBLOCK_ID"] = static::prepareHLBlockIdByTableName($element["HLBLOCK_TABLE_NAME"]);
+        }
+
         if (!$element["HLBLOCK_ID"] || !$element['ID']) {
-            throw new InvalidArgumentException('Element must include ID and HLBLOCK_ID');
+            throw new InvalidArgumentException('Element must include ID and HLBLOCK_ID/HLBLOCK_TABLE_NAME');
         }
 
         $linkTemplate = '/bitrix/admin/highloadblock_row_edit.php?ENTITY_ID=%s&ID=%s&lang=ru&bxpublic=Y';
@@ -199,9 +206,13 @@ class Action
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
             return;
         }
+
+        if (!$element["HLBLOCK_ID"] && $element["HLBLOCK_TABLE_NAME"]) {
+            $element["HLBLOCK_ID"] = static::prepareHLBlockIdByTableName($element["HLBLOCK_TABLE_NAME"]);
+        }
         
         if (!$element["HLBLOCK_ID"] || !$element['ID']) {
-            throw new InvalidArgumentException('Element must include ID and HLBLOCK_ID');
+            throw new InvalidArgumentException('Element must include ID and HLBLOCK_ID/HLBLOCK_TABLE_NAME');
         }
 
         $linkTemplate = '/bitrix/admin/highloadblock_row_edit.php?action=delete&ENTITY_ID=%s&ID=%s&lang=ru';
@@ -325,5 +336,25 @@ class Action
         }
 
         return static::$iblockSectionArray[$id];
+    }
+
+    /**
+     * @param string $tableName
+     * @return int
+     */
+    protected static function prepareHLBlockIdByTableName($tableName)
+    {
+        if (empty(static::$hlblockIdsByTableName[$tableName])) {
+            $row = HighloadBlockTable::getList([
+                'select' => ['ID'],
+                'filter' => ['=TABLE_NAME' => $tableName]
+            ])->fetch();
+
+            if (!empty($row['ID'])) {
+                static::$hlblockIdsByTableName[$tableName] = (int) $row['ID'];
+            }
+        }
+
+        return static::$hlblockIdsByTableName[$tableName];
     }
 }
