@@ -32,8 +32,8 @@ foreach($arResult["ARTICLES"] as $article) {
     $article["EDIT_LINK"] = $arButtons["edit"]["edit_element"]["ACTION_URL"];
     $article["DELETE_LINK"] = $arButtons["edit"]["delete_element"]["ACTION_URL"];
 
-    $this->AddEditAction($article['ID'], $article['EDIT_LINK'], CIBlock::GetArrayByID($element["IBLOCK_ID"], "ELEMENT_EDIT"));
-    $this->AddDeleteAction($article['ID'], $article['DELETE_LINK'], CIBlock::GetArrayByID($element["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => 'Вы уверены, что хотите удалить элемент?'));
+    $this->AddEditAction('iblock_element_' . $article['ID'], $article['EDIT_LINK'], CIBlock::GetArrayByID($element["IBLOCK_ID"], "ELEMENT_EDIT"));
+    $this->AddDeleteAction('iblock_element_' . $article['ID'], $article['DELETE_LINK'], CIBlock::GetArrayByID($element["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => 'Вы уверены, что хотите удалить элемент?'));
 
     ?><div id="<?=$this->GetEditAreaID('iblock_element_' . $article['ID'])?>"><?= $article['NAME'] ?></div><?
 }
