@@ -36,11 +36,12 @@ class Action
     /**
      * @param CBitrixComponentTemplate $template
      * @param $element
+     * @return string
      */
     public static function editIBlockElement($template, $element)
     {
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
-            return;
+            return '';
         }
 
         if (is_numeric($element)) {
@@ -54,17 +55,20 @@ class Action
         $link = $buttons["edit"]["edit_element"]["ACTION_URL"];
 
         $template->AddEditAction('iblock_element_' . $element['ID'], $link, CIBlock::GetArrayByID($element["IBLOCK_ID"], "ELEMENT_EDIT"));
+
+        return static::areaForIBlockElement($template, $element);
     }
-    
+
     /**
      * @param CBitrixComponentTemplate $template
      * @param $element
      * @param string $confirm
+     * @return string
      */
     public static function deleteIBlockElement($template, $element, $confirm = 'Вы уверены, что хотите удалить элемент?')
     {
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
-            return;
+            return '';
         }
 
         if (is_numeric($element)) {
@@ -79,16 +83,20 @@ class Action
         $link = $buttons["edit"]["delete_element"]["ACTION_URL"];
 
         $template->AddDeleteAction('iblock_element_' . $element['ID'], $link, CIBlock::GetArrayByID($element["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => $confirm));
+
+        return static::areaForIBlockElement($template, $element);
     }
 
     /**
      * @param CBitrixComponentTemplate $template
      * @param $element
+     * @return string
      */
     public static function editAndDeleteIBlockElement($template, $element)
     {
         static::editIBlockElement($template, $element);
-        static::deleteIBlockElement($template, $element);
+
+        return static::deleteIBlockElement($template, $element);
     }
 
     /**
@@ -104,11 +112,12 @@ class Action
     /**
      * @param CBitrixComponentTemplate $template
      * @param $section
+     * @return string
      */
     public static function editIBlockSection($template, $section)
     {
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
-            return;
+            return '';
         }
 
         if (is_numeric($section)) {
@@ -123,17 +132,20 @@ class Action
         $link = $buttons["edit"]["edit_section"]["ACTION_URL"];
 
         $template->AddEditAction('iblock_section_' . $section['ID'], $link, CIBlock::GetArrayByID($section["IBLOCK_ID"], "SECTION_EDIT"));
+
+        return static::areaForIBlockSection($template, $section);
     }
 
     /**
      * @param CBitrixComponentTemplate $template
      * @param $section
      * @param string $confirm
+     * @return string
      */
     public static function deleteIBlockSection($template, $section, $confirm = 'Вы уверены, что хотите удалить раздел?')
     {
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
-            return;
+            return '';
         }
 
         if (is_numeric($section)) {
@@ -148,16 +160,20 @@ class Action
         $link = $buttons["edit"]["delete_section"]["ACTION_URL"];
 
         $template->AddDeleteAction('iblock_section_' . $section['ID'], $link, CIBlock::GetArrayByID($section["IBLOCK_ID"], "SECTION_DELETE"), array("CONFIRM" => $confirm));
+
+        return static::areaForIBlockSection($template, $section);
     }
 
     /**
      * @param CBitrixComponentTemplate $template
      * @param $section
+     * @return string
      */
     public static function editAndDeleteIBlockSection($template, $section)
     {
         static::editIBlockSection($template, $section);
-        static::deleteIBlockSection($template, $section);
+    
+        return static::deleteIBlockSection($template, $section);
     }
 
     /**
@@ -169,16 +185,17 @@ class Action
     {
         return static::getEditArea($template, 'iblock_section', $section);
     }
-
+    
     /**
      * @param CBitrixComponentTemplate $template
      * @param $element
      * @param string $label
+     * @return string
      */
     public static function editHLBlockElement($template, $element, $label = 'Изменить элемент')
     {
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
-            return;
+            return '';
         }
 
         if (!$element["HLBLOCK_ID"] && $element["HLBLOCK_TABLE_NAME"]) {
@@ -193,6 +210,8 @@ class Action
         $link = sprintf($linkTemplate, (int) $element["HLBLOCK_ID"], (int) $element["ID"]);
 
         $template->AddEditAction('hlblock_element_' . $element['ID'], $link, $label);
+
+        return static::areaForHLBlockElement($template, $element);
     }
     
     /**
@@ -200,35 +219,42 @@ class Action
      * @param $element
      * @param string $label
      * @param string $confirm
+     * @return string
      */
     public static function deleteHLBlockElement($template, $element, $label = 'Удалить элемент', $confirm = 'Вы уверены, что хотите удалить элемент?')
     {
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
-            return;
+            return '';
         }
 
         if (!$element["HLBLOCK_ID"] && $element["HLBLOCK_TABLE_NAME"]) {
             $element["HLBLOCK_ID"] = static::prepareHLBlockIdByTableName($element["HLBLOCK_TABLE_NAME"]);
         }
-        
+
         if (!$element["HLBLOCK_ID"] || !$element['ID']) {
             throw new InvalidArgumentException('Element must include ID and HLBLOCK_ID/HLBLOCK_TABLE_NAME');
         }
 
         $linkTemplate = '/bitrix/admin/highloadblock_row_edit.php?action=delete&ENTITY_ID=%s&ID=%s&lang=ru';
         $link = sprintf($linkTemplate, (int) $element["HLBLOCK_ID"], (int) $element["ID"]);
-    
+
         $template->AddDeleteAction('hlblock_element_' . $element['ID'], $link, $label, array("CONFIRM" => $confirm));
+
+        return static::areaForHLBlockElement($template, $element);
     }
 
     /**
      * @param CBitrixComponentTemplate $template
      * @param $element
+     *
+     * @return string
      */
     public static function editAndDeleteHLBlockElement($template, $element)
     {
         static::editHLBlockElement($template, $element);
         static::deleteHLBlockElement($template, $element);
+
+        return static::deleteHLBlockElement($template, $element);
     }
 
     /**
@@ -240,7 +266,7 @@ class Action
     {
         return static::getEditArea($template, 'hlblock_element', $element);
     }
-    
+
     /**
      * @param CBitrixComponent|CBitrixComponentTemplate $componentOrTemplate
      * @param $iblockId
