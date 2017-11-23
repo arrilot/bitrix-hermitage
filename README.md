@@ -35,7 +35,7 @@ foreach($arResult["ARTICLES"] as $article) {
     $this->AddEditAction($article['ID'], $article['EDIT_LINK'], CIBlock::GetArrayByID($element["IBLOCK_ID"], "ELEMENT_EDIT"));
     $this->AddDeleteAction($article['ID'], $article['DELETE_LINK'], CIBlock::GetArrayByID($element["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => 'Вы уверены, что хотите удалить элемент?'));
 
-    ?><div id="<?=$this->GetEditAreaID('iblock_element_' . $article['ID'])?>">{{ $article['NAME'] }}</div><?
+    ?><div id="<?=$this->GetEditAreaID('iblock_element_' . $article['ID'])?>"><?= $article['NAME'] ?></div><?
 }
 
 // с пакетом
@@ -44,7 +44,7 @@ use Arrilot\BitrixHermitage\Action;
 foreach($arResult["ARTICLES"] as $article) {
     Action::editAndDeleteIBlockElement($this, $article);
 
-    ?><div id="<?= Action::areaForIBlockElement($this, $article) ?>">{{ $article['NAME'] }}</div><?
+    ?><div id="<?= Action::areaForIBlockElement($this, $article) ?>"><?= $article['NAME'] ?></div><?
 }
 ```
 
