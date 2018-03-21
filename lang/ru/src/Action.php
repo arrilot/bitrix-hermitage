@@ -1,0 +1,6 @@
+<?php
+$MESS['ARRILOT_BITRIX_HERMITAGE_DELETE_IBLOCK_ELEMENT_CONFIRM'] = 'Вы уверены, что хотите удалить элемент?';
+$MESS['ARRILOT_BITRIX_HERMITAGE_DELETE_IBLOCK_SECTION_CONFIRM'] = 'Вы уверены, что хотите удалить раздел?';
+$MESS['ARRILOT_BITRIX_HERMITAGE_EDIT_HLBLOCK_ELEMENT_LABEL'] = 'Изменить элемент';
+$MESS['ARRILOT_BITRIX_HERMITAGE_DELETE_HLBLOCK_ELEMENT_LABEL'] = 'Удалить элемент';
+$MESS['ARRILOT_BITRIX_HERMITAGE_DELETE_HLBLOCK_ELEMENT_CONFIRM'] = "Вы уверены, что хотите удалить элемент?";
