@@ -4,10 +4,13 @@ namespace Arrilot\BitrixHermitage;
 
 use Bitrix\Highloadblock\HighloadBlockTable;
 use Bitrix\Main\Application;
+use Bitrix\Main\Localization\Loc;
 use CBitrixComponent;
 use CBitrixComponentTemplate;
 use CIBlock;
 use InvalidArgumentException;
+
+Loc::loadMessages(__FILE__);
 
 class Action
 {
@@ -65,8 +68,10 @@ class Action
      * @param string $confirm
      * @return string
      */
-    public static function deleteIBlockElement($template, $element, $confirm = 'Вы уверены, что хотите удалить элемент?')
+    public static function deleteIBlockElement($template, $element, $confirm = null)
     {
+        $confirm = $confirm ?: Loc::getMessage('ARRILOT_BITRIX_HERMITAGE_DELETE_IBLOCK_ELEMENT_CONFIRM');
+
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
             return '';
         }
@@ -142,8 +147,10 @@ class Action
      * @param string $confirm
      * @return string
      */
-    public static function deleteIBlockSection($template, $section, $confirm = 'Вы уверены, что хотите удалить раздел?')
+    public static function deleteIBlockSection($template, $section, $confirm = null)
     {
+        $confirm = $confirm ?: Loc::getMessage("ARRILOT_BITRIX_HERMITAGE_DELETE_IBLOCK_SECTION_CONFIRM");
+
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
             return '';
         }
@@ -192,8 +199,10 @@ class Action
      * @param string $label
      * @return string
      */
-    public static function editHLBlockElement($template, $element, $label = 'Изменить элемент')
+    public static function editHLBlockElement($template, $element, $label = null)
     {
+        $label = $label ?: Loc::getMessage("ARRILOT_BITRIX_HERMITAGE_EDIT_HLBLOCK_ELEMENT_LABEL");
+
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
             return '';
         }
@@ -221,8 +230,11 @@ class Action
      * @param string $confirm
      * @return string
      */
-    public static function deleteHLBlockElement($template, $element, $label = 'Удалить элемент', $confirm = 'Вы уверены, что хотите удалить элемент?')
+    public static function deleteHLBlockElement($template, $element, $label = null, $confirm = null)
     {
+        $label = $label ?: Loc::getMessage('ARRILOT_BITRIX_HERMITAGE_DELETE_HLBLOCK_ELEMENT_LABEL');
+        $confirm = $confirm ?: Loc::getMessage('ARRILOT_BITRIX_HERMITAGE_DELETE_HLBLOCK_ELEMENT_CONFIRM');
+
         if (!$GLOBALS['APPLICATION']->GetShowIncludeAreas()) {
             return '';
         }
