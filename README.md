@@ -2,7 +2,12 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/arrilot/bitrix-hermitage.svg?style=flat)](https://packagist.org/packages/Arrilot/bitrix-hermitage)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/arrilot/bitrix-hermitage/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/arrilot/bitrix-hermitage/)
 
-# Инструменты для работы с эрмитажем Битрикса (in development)
+# Данный пакет больше активно не поддерживается
+
+Причина - мы больше не используем Битрикс в своих проектах.
+Если вам интересен этот проект и вы хотите заняться его поддержкой - форкните его и создайте Issue в данном репозитории чтобы мы поместили здесь ссылку на форк.
+
+# Инструменты для работы с эрмитажем Битрикса
 
 ## Установка
 
